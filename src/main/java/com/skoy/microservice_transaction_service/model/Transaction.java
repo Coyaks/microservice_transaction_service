@@ -1,5 +1,8 @@
 package com.skoy.microservice_transaction_service.model;
 
+import com.skoy.microservice_transaction_service.enums.ProductTypeEnum;
+import com.skoy.microservice_transaction_service.enums.TransactionStatusEnum;
+import com.skoy.microservice_transaction_service.enums.TransactionTypeEnum;
 import lombok.Data;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -13,10 +16,11 @@ public class Transaction {
     @Id
     private String id;
     private String customerId;
-    private String accountId;
-    private String type; // DEPOSIT, WITHDRAWAL
+    private ProductTypeEnum productType;
+    private String productTypeId;
+    private TransactionTypeEnum transactionType; // DEPOSIT, WITHDRAWAL, TRANSFER
     private BigDecimal amount;
-    private String status; // PENDING, APPROVED, REJECTED
+    private TransactionStatusEnum status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

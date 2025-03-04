@@ -1,5 +1,8 @@
 package com.skoy.microservice_transaction_service.dto;
 
+import com.skoy.microservice_transaction_service.enums.ProductTypeEnum;
+import com.skoy.microservice_transaction_service.enums.TransactionStatusEnum;
+import com.skoy.microservice_transaction_service.enums.TransactionTypeEnum;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -9,9 +12,10 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class TransactionDTO {
     private String id;
-    private String accountId;
     private String customerId;
-    private String type; // DEPOSIT, WITHDRAWAL
+    private ProductTypeEnum productType;
+    private String productTypeId;
+    private TransactionTypeEnum transactionType;
     private BigDecimal amount;
-    private String status; // PENDING, APPROVED, REJECTED
+    private TransactionStatusEnum status;
 }

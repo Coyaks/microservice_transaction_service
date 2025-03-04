@@ -1,10 +1,13 @@
 package com.skoy.microservice_transaction_service.service;
 
 import com.skoy.microservice_transaction_service.dto.BankAccountDTO;
+import com.skoy.microservice_transaction_service.dto.CreditDTO;
 import com.skoy.microservice_transaction_service.dto.TransactionDTO;
 import com.skoy.microservice_transaction_service.dto.CustomerDTO;
+import com.skoy.microservice_transaction_service.enums.ProductTypeEnum;
 import com.skoy.microservice_transaction_service.mapper.TransactionMapper;
 import com.skoy.microservice_transaction_service.model.Transaction;
+import com.skoy.microservice_transaction_service.model.UpdateBalanceRequest;
 import com.skoy.microservice_transaction_service.repository.ITransactionRepository;
 import com.skoy.microservice_transaction_service.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -33,6 +36,9 @@ public class TransactionService implements ITransactionService {
     @Value("${account.service.url}")
     private String accountServiceUrl;
 
+    @Value("${credit.service.url}")
+    private String creditServiceUrl;
+
     @Override
     public Flux<TransactionDTO> findAll() {
         return repository.findAll()
@@ -46,62 +52,119 @@ public class TransactionService implements ITransactionService {
     }
 
     /*@Override
-    public Mono<TransactionDTO> create(TransactionDTO accountDTO) {
-
-        return webClientBuilder.build()
-                .get()
-                .uri(customerServiceUrl + "/customers/" + accountDTO.getCustomerId())
-                .retrieve()
-                .bodyToMono(new ParameterizedTypeReference<ApiResponse<CustomerDTO>>() {})
-                .flatMap(response -> {
-                    CustomerDTO customer = response.getData();
-                    if (customer != null) {
-                        return repository.save(TransactionMapper.toEntity(accountDTO))
-                                .map(TransactionMapper::toDto);
-                    } else {
-                        return Mono.error(new RuntimeException("Cliente no encontrado"));
+    public Mono<TransactionDTO> create(TransactionDTO transactionDto) {
+        return checkCustomer(transactionDto.getCustomerId())
+                .flatMap(customer -> {
+                    if(transactionDto.getProductType() == ProductTypeEnum.BANK_ACCOUNT){
+                        return checkBankAccount(transactionDto.getProductTypeId());
+                    }else{
+                        return checkCredit(transactionDto.getProductTypeId());
                     }
-                })
-                .doOnError(error -> log.error("Error al validar cliente: {}", error.getMessage()));
-    }*/
 
+                })
+                .flatMap(bankAccountOrCredit -> {
+                    return repository.save(TransactionMapper.toEntity(transactionDto))
+                            .map(TransactionMapper::toDto);
+                });
+    }*/
 
     @Override
     public Mono<TransactionDTO> create(TransactionDTO transactionDto) {
-        // Verificar si el cliente existe en Customer Service
+        return checkCustomer(transactionDto.getCustomerId())
+                .flatMap(customer -> {
+                    if (transactionDto.getProductType() == ProductTypeEnum.BANK_ACCOUNT) {
+                        return checkBankAccount(transactionDto.getProductTypeId());
+                    } else {
+                        return checkCredit(transactionDto.getProductTypeId());
+                    }
+                })
+                .flatMap(bankAccountOrCredit -> {
+                    return repository.save(TransactionMapper.toEntity(transactionDto))
+                            .map(TransactionMapper::toDto)
+                            .flatMap(savedTransaction -> {
+                                if(transactionDto.getProductType() == ProductTypeEnum.BANK_ACCOUNT){
+                                    return updateBankAccountBalance(transactionDto)
+                                            .thenReturn(savedTransaction);
+                                }else if(transactionDto.getProductType() == ProductTypeEnum.CREDIT){
+                                    return updateCreditBalance(transactionDto)
+                                            .thenReturn(savedTransaction);
+
+                                }else{
+                                    return Mono.error(new RuntimeException("Tipo de producto no soportado"));
+                                }
+                            });
+                });
+    }
+
+    private Mono<Void> updateBankAccountBalance(TransactionDTO transactionDto) {
+        return webClientBuilder.build()
+                .post()
+                .uri(accountServiceUrl+"/bank_accounts/update_balance")
+                .bodyValue(new UpdateBalanceRequest(
+                        transactionDto.getProductTypeId(),
+                        transactionDto.getTransactionType(),
+                        transactionDto.getAmount()))
+                .retrieve()
+                .bodyToMono(Void.class);
+    }
+
+    private Mono<Void> updateCreditBalance(TransactionDTO transactionDto) {
+        return webClientBuilder.build()
+                .post()
+                .uri(creditServiceUrl+"/credits/update_balance")
+                .bodyValue(new UpdateBalanceRequest(
+                        transactionDto.getProductTypeId(),
+                        transactionDto.getTransactionType(),
+                        transactionDto.getAmount()))
+                .retrieve()
+                .bodyToMono(Void.class);
+    }
+
+
+    private Mono<CustomerDTO> checkCustomer(String customerId) {
         return webClientBuilder.build()
                 .get()
-                .uri(customerServiceUrl + "/customers/" + transactionDto.getCustomerId()) // URL de Customer Service
+                .uri(customerServiceUrl + "/customers/" + customerId)
                 .retrieve()
                 .bodyToMono(new ParameterizedTypeReference<ApiResponse<CustomerDTO>>() {
                 })
                 .flatMap(rspCustomer -> {
-
                     CustomerDTO customer = rspCustomer.getData();
                     if (customer == null) {
                         return Mono.error(new RuntimeException("Cliente no encontrado"));
                     }
-
-                    // Verificar si la cuenta existe en BankAccount Service
-                    return webClientBuilder.build()
-                            .get()
-                            .uri(accountServiceUrl + "/bank_accounts/" + transactionDto.getAccountId()) // URL de BankAccount Service
-                            .retrieve()
-                            .bodyToMono(new ParameterizedTypeReference<ApiResponse<BankAccountDTO>>() {
-                            })
-                            .flatMap(rspBankAccount -> {
-                                BankAccountDTO item = rspBankAccount.getData();
-                                if (item == null) {
-                                    return Mono.error(new RuntimeException("Cuenta bancaria no encontrada"));
-                                }
-
-                                 return repository.save(TransactionMapper.toEntity(transactionDto))
-                                            .map(TransactionMapper::toDto);
-
-                            });
-                })
-                .switchIfEmpty(Mono.error(new RuntimeException("Cliente o cuenta no encontrados")));
+                    return Mono.just(customer);
+                });
     }
+
+    private Mono<BankAccountDTO> checkBankAccount(String productTypeId) {
+        return webClientBuilder.build()
+                .get()
+                .uri(accountServiceUrl + "/bank_accounts/" + productTypeId)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ApiResponse<BankAccountDTO>>() {
+                })
+                .flatMap(rspBankAccount -> {
+                    BankAccountDTO bankAccount = rspBankAccount.getData();
+                    if (bankAccount == null) return Mono.error(new RuntimeException("Cuenta bancaria no encontrada"));
+                    return Mono.just(bankAccount);
+                });
+    }
+
+    private Mono<CreditDTO> checkCredit(String productTypeId) {
+        return webClientBuilder.build()
+                .get()
+                .uri(creditServiceUrl + "/credits/" + productTypeId)
+                .retrieve()
+                .bodyToMono(new ParameterizedTypeReference<ApiResponse<CreditDTO>>() {
+                })
+                .flatMap(rspCredit -> {
+                    CreditDTO credit = rspCredit.getData();
+                    if (credit == null) return Mono.error(new RuntimeException("Credito no encontrado"));
+                    return Mono.just(credit);
+                });
+    }
+
 
     @Override
     public Mono<TransactionDTO> update(String id, TransactionDTO accountDTO) {
@@ -117,6 +180,12 @@ public class TransactionService implements ITransactionService {
     @Override
     public Mono<Void> delete(String id) {
         return repository.deleteById(id);
+    }
+
+    @Override
+    public Flux<TransactionDTO> findByCustomerId(String customerId) {
+        return repository.findByCustomerId(customerId)
+                .map(TransactionMapper::toDto);
     }
 
 }
