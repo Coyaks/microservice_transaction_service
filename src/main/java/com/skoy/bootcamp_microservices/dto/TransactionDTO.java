@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -20,4 +21,6 @@ public class TransactionDTO {
     private TransactionTypeEnum transactionType;
     private BigDecimal amount;
     private TransactionStatusEnum status;
+    private LocalDateTime createdAt;
+    private BigDecimal commissionAmount;
 }

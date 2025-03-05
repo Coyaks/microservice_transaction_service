@@ -9,6 +9,7 @@ import com.skoy.bootcamp_microservices.mapper.TransactionMapper;
 import com.skoy.bootcamp_microservices.model.UpdateBalanceRequest;
 import com.skoy.bootcamp_microservices.repository.ITransactionRepository;
 import com.skoy.bootcamp_microservices.utils.ApiResponse;
+import com.skoy.bootcamp_microservices.utils.Util;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +20,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Service
@@ -50,25 +52,38 @@ public class TransactionService implements ITransactionService {
                 .map(TransactionMapper::toDto);
     }
 
-    /*@Override
-    public Mono<TransactionDTO> create(TransactionDTO transactionDto) {
-        return checkCustomer(transactionDto.getCustomerId())
-                .flatMap(customer -> {
-                    if(transactionDto.getProductType() == ProductTypeEnum.BANK_ACCOUNT){
-                        return checkBankAccount(transactionDto.getProductTypeId());
-                    }else{
-                        return checkCredit(transactionDto.getProductTypeId());
-                    }
-
-                })
-                .flatMap(bankAccountOrCredit -> {
-                    return repository.save(TransactionMapper.toEntity(transactionDto))
-                            .map(TransactionMapper::toDto);
-                });
-    }*/
+//    @Override
+//    public Mono<TransactionDTO> create(TransactionDTO transactionDto) {
+//        transactionDto.setCreatedAt(LocalDateTime.now());
+//        return checkCustomer(transactionDto.getCustomerId())
+//                .flatMap(customer -> {
+//                    if (transactionDto.getProductType() == ProductTypeEnum.BANK_ACCOUNT) {
+//                        return checkBankAccount(transactionDto.getProductTypeId());
+//                    } else {
+//                        return checkCredit(transactionDto.getProductTypeId());
+//                    }
+//                })
+//                .flatMap(bankAccountOrCredit -> {
+//                    return repository.save(TransactionMapper.toEntity(transactionDto))
+//                            .map(TransactionMapper::toDto)
+//                            .flatMap(savedTransaction -> {
+//                                if (transactionDto.getProductType() == ProductTypeEnum.BANK_ACCOUNT) {
+//                                    return updateBankAccountBalance(transactionDto)
+//                                            .thenReturn(savedTransaction);
+//                                } else if (transactionDto.getProductType() == ProductTypeEnum.CREDIT) {
+//                                    return updateCreditBalance(transactionDto)
+//                                            .thenReturn(savedTransaction);
+//
+//                                } else {
+//                                    return Mono.error(new RuntimeException("Tipo de producto no soportado"));
+//                                }
+//                            });
+//                });
+//    }
 
     @Override
     public Mono<TransactionDTO> create(TransactionDTO transactionDto) {
+        transactionDto.setCreatedAt(LocalDateTime.now());
         return checkCustomer(transactionDto.getCustomerId())
                 .flatMap(customer -> {
                     if (transactionDto.getProductType() == ProductTypeEnum.BANK_ACCOUNT) {
@@ -81,36 +96,58 @@ public class TransactionService implements ITransactionService {
                     return repository.save(TransactionMapper.toEntity(transactionDto))
                             .map(TransactionMapper::toDto)
                             .flatMap(savedTransaction -> {
-                                if(transactionDto.getProductType() == ProductTypeEnum.BANK_ACCOUNT){
+                                if (transactionDto.getProductType() == ProductTypeEnum.BANK_ACCOUNT) {
                                     return updateBankAccountBalance(transactionDto)
-                                            .thenReturn(savedTransaction);
-                                }else if(transactionDto.getProductType() == ProductTypeEnum.CREDIT){
+                                            .flatMap(commissionAmount -> {
+                                                savedTransaction.setCommissionAmount(commissionAmount);
+                                                return repository.save(TransactionMapper.toEntity(savedTransaction))
+                                                        .map(TransactionMapper::toDto);
+                                            });
+                                } else if (transactionDto.getProductType() == ProductTypeEnum.CREDIT) {
                                     return updateCreditBalance(transactionDto)
                                             .thenReturn(savedTransaction);
-
-                                }else{
+                                } else {
                                     return Mono.error(new RuntimeException("Tipo de producto no soportado"));
                                 }
                             });
                 });
     }
 
-    private Mono<Void> updateBankAccountBalance(TransactionDTO transactionDto) {
+
+
+//    private Mono<Void> updateBankAccountBalance(TransactionDTO transactionDto) {
+//        return webClientBuilder.build()
+//                .post()
+//                .uri(accountServiceUrl + "/bank_accounts/update_balance")
+//                .bodyValue(new UpdateBalanceRequest(
+//                        transactionDto.getProductTypeId(),
+//                        transactionDto.getTransactionType(),
+//                        transactionDto.getAmount()))
+//                .retrieve()
+//                .bodyToMono(Void.class);
+//    }
+
+    private Mono<BigDecimal> updateBankAccountBalance(TransactionDTO transactionDto) {
         return webClientBuilder.build()
                 .post()
-                .uri(accountServiceUrl+"/bank_accounts/update_balance")
+                .uri(accountServiceUrl + "/bank_accounts/update_balance")
                 .bodyValue(new UpdateBalanceRequest(
                         transactionDto.getProductTypeId(),
                         transactionDto.getTransactionType(),
                         transactionDto.getAmount()))
                 .retrieve()
-                .bodyToMono(Void.class);
+                .bodyToMono(new ParameterizedTypeReference<ApiResponse<BankAccountDTO>>() {})
+                .map(response -> {
+                    //BigDecimal commissionAmount = response.getDataExtra();
+                    BigDecimal commissionAmount = Util.convertObjectToBigDecimal(response.getDataExtra());
+                    return commissionAmount;
+                });
     }
 
     private Mono<Void> updateCreditBalance(TransactionDTO transactionDto) {
         return webClientBuilder.build()
                 .post()
-                .uri(creditServiceUrl+"/credits/update_balance")
+                .uri(creditServiceUrl + "/credits/update_balance")
                 .bodyValue(new UpdateBalanceRequest(
                         transactionDto.getProductTypeId(),
                         transactionDto.getTransactionType(),
@@ -129,9 +166,7 @@ public class TransactionService implements ITransactionService {
                 })
                 .flatMap(rspCustomer -> {
                     CustomerDTO customer = rspCustomer.getData();
-                    if (customer == null) {
-                        return Mono.error(new RuntimeException("Cliente no encontrado"));
-                    }
+                    if (customer == null) return Mono.error(new RuntimeException("Cliente no encontrado"));
                     return Mono.just(customer);
                 });
     }
@@ -185,6 +220,11 @@ public class TransactionService implements ITransactionService {
     public Flux<TransactionDTO> findByCustomerId(String customerId) {
         return repository.findByCustomerId(customerId)
                 .map(TransactionMapper::toDto);
+    }
+
+    @Override
+    public Mono<Void> deleteAll() {
+        return repository.deleteAll();
     }
 
 }

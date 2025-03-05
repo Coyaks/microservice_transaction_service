@@ -14,6 +14,8 @@ public class TransactionMapper {
         item.setTransactionType(dto.getTransactionType());
         item.setAmount(dto.getAmount());
         item.setStatus(dto.getStatus());
+        item.setCreatedAt(dto.getCreatedAt());
+        item.setCommissionAmount(dto.getCommissionAmount());
         return item;
     }
 
@@ -26,6 +28,8 @@ public class TransactionMapper {
         dto.setTransactionType(item.getTransactionType());
         dto.setAmount(item.getAmount());
         dto.setStatus(item.getStatus());
+        dto.setCreatedAt(item.getCreatedAt());
+        dto.setCommissionAmount(item.getCommissionAmount());
         return dto;
     }
 }

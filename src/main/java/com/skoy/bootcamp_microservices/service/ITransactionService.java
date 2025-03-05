@@ -12,4 +12,5 @@ public interface ITransactionService {
     Mono<TransactionDTO> update(String id, TransactionDTO accountDTO);
     Mono<Void> delete(String id);
     Flux<TransactionDTO> findByCustomerId(String customerId);
+    Mono<Void> deleteAll();
 }

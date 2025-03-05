@@ -23,4 +23,5 @@ public class Transaction {
     private TransactionStatusEnum status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private BigDecimal commissionAmount = BigDecimal.ZERO;
 }

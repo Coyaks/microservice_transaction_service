@@ -11,7 +11,7 @@
  Target Server Version : 80004 (8.0.4)
  File Encoding         : 65001
 
- Date: 05/03/2025 01:46:43
+ Date: 05/03/2025 08:08:44
 */
 
 
@@ -25,56 +25,55 @@ db.createCollection("transactions");
 // Documents of transactions
 // ----------------------------
 db.getCollection("transactions").insert([ {
-    _id: ObjectId("67c0ebd4c5cc83612fd92bb9"),
+    _id: ObjectId("67c83ac4fa54543ae2ccea75"),
     customerId: "67bc5049652bf702f7552f25",
     productType: "BANK_ACCOUNT",
-    productTypeId: "67bfa9b01226010dfdabfe24",
+    productTypeId: "67c822a6c5323d08f13bab0d",
     transactionType: "DEPOSIT",
     amount: "100",
-    _class: "com.skoy.microservice_transaction_service.model.Transaction"
+    createdAt: ISODate("2025-03-05T11:51:32.118Z"),
+    _class: "com.skoy.bootcamp_microservices.model.Transaction"
 } ]);
 db.getCollection("transactions").insert([ {
-    _id: ObjectId("67c0edd8c5cc83612fd92bba"),
-    customerId: "67bc5049652bf702f7552f25",
-    productType: "CREDIT",
-    productTypeId: "67bf901eddc2c72eb4dad76e",
-    transactionType: "DEPOSIT",
-    amount: "100",
-    _class: "com.skoy.microservice_transaction_service.model.Transaction"
-} ]);
-db.getCollection("transactions").insert([ {
-    _id: ObjectId("67c16b76caa76e0fe8d57ec6"),
+    _id: ObjectId("67c83b93fa54543ae2ccea76"),
     customerId: "67bc5049652bf702f7552f25",
     productType: "BANK_ACCOUNT",
-    productTypeId: "67bfa9b01226010dfdabfe24",
+    productTypeId: "67c822a6c5323d08f13bab0d",
     transactionType: "DEPOSIT",
-    amount: "100",
-    _class: "com.skoy.microservice_transaction_service.model.Transaction"
+    amount: "200",
+    createdAt: ISODate("2025-03-05T11:54:59.807Z"),
+    _class: "com.skoy.bootcamp_microservices.model.Transaction"
 } ]);
 db.getCollection("transactions").insert([ {
-    _id: ObjectId("67c16bb1caa76e0fe8d57ec7"),
+    _id: ObjectId("67c844729a85106cad07e309"),
     customerId: "67bc5049652bf702f7552f25",
     productType: "BANK_ACCOUNT",
-    productTypeId: "67bfa9b01226010dfdabfe24",
-    transactionType: "WITHDRAWAL",
-    amount: "300",
-    _class: "com.skoy.microservice_transaction_service.model.Transaction"
+    productTypeId: "67c822a6c5323d08f13bab0d",
+    transactionType: "DEPOSIT",
+    amount: "100",
+    createdAt: ISODate("2025-03-05T12:32:50.044Z"),
+    commissionAmount: "0",
+    _class: "com.skoy.bootcamp_microservices.model.Transaction"
 } ]);
 db.getCollection("transactions").insert([ {
-    _id: ObjectId("67c1751acaa76e0fe8d57eca"),
+    _id: ObjectId("67c848bba057fe1e6ee0bc30"),
     customerId: "67bc5049652bf702f7552f25",
-    productType: "CREDIT",
-    productTypeId: "67c1712729b272787cfdb624",
-    transactionType: "WITHDRAWAL",
-    amount: "600",
-    _class: "com.skoy.microservice_transaction_service.model.Transaction"
+    productType: "BANK_ACCOUNT",
+    productTypeId: "67c822a6c5323d08f13bab0d",
+    transactionType: "DEPOSIT",
+    amount: "100",
+    createdAt: ISODate("2025-03-05T12:51:06.923Z"),
+    commissionAmount: "0",
+    _class: "com.skoy.bootcamp_microservices.model.Transaction"
 } ]);
 db.getCollection("transactions").insert([ {
-    _id: ObjectId("67c175b62aee1575164685b8"),
+    _id: ObjectId("67c848e7fb135d4ce643371b"),
     customerId: "67bc5049652bf702f7552f25",
-    productType: "CREDIT",
-    productTypeId: "67c1712729b272787cfdb624",
-    transactionType: "WITHDRAWAL",
-    amount: "600",
-    _class: "com.skoy.microservice_transaction_service.model.Transaction"
+    productType: "BANK_ACCOUNT",
+    productTypeId: "67c822a6c5323d08f13bab0d",
+    transactionType: "DEPOSIT",
+    amount: "100",
+    createdAt: ISODate("2025-03-05T12:51:51.535Z"),
+    commissionAmount: "5.0",
+    _class: "com.skoy.bootcamp_microservices.model.Transaction"
 } ]);

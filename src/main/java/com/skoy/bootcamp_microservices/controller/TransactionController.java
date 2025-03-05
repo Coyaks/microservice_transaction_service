@@ -5,6 +5,7 @@ import com.skoy.bootcamp_microservices.enums.ProductTypeEnum;
 import com.skoy.bootcamp_microservices.enums.TransactionTypeEnum;
 import com.skoy.bootcamp_microservices.service.ITransactionService;
 import com.skoy.bootcamp_microservices.utils.ApiResponse;
+import com.skoy.bootcamp_microservices.utils.Constants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +48,10 @@ public class TransactionController {
                 .map(createdItem -> {
                     if (createdItem != null) {
                         logger.info("transactions created successfully: {}", createdItem);
-                        return new ApiResponse<>("ok", createdItem, 200);
+                        return new ApiResponse<>("ok", createdItem, Constants.STATUS_OK);
                     } else {
                         logger.error("Error creating transactions");
-                        return new ApiResponse<>("error", null, 500);
+                        return new ApiResponse<>("error", null, Constants.STATUS_E500);
                     }
                 });
     }
@@ -62,9 +63,9 @@ public class TransactionController {
                 .flatMap(existingItem -> service.update(id, transactionDto)
                         .map(updatedItem -> {
                             logger.info("transactions updated successfully: {}", updatedItem);
-                            return new ApiResponse<>("Actualizado correctamente", updatedItem, 200);
+                            return new ApiResponse<>("Actualizado correctamente", updatedItem, Constants.STATUS_OK);
                         }))
-                .switchIfEmpty(Mono.just(new ApiResponse<>("ID no encontrado", null, 404)))
+                .switchIfEmpty(Mono.just(new ApiResponse<>("ID no encontrado", null, Constants.STATUS_E404)))
                 .doOnError(e -> logger.error("Error updating transactions with ID: {}", id, e));
     }
 
@@ -73,11 +74,22 @@ public class TransactionController {
         logger.info("Deleting transactions with ID: {}", id);
         return service.findById(id)
                 .flatMap(existingItem -> service.delete(id)
-                        .then(Mono.just(new ApiResponse<Void>("Eliminado correctamente", null, 200))))
-                .switchIfEmpty(Mono.just(new ApiResponse<Void>("ID no encontrado", null, 404)))
+                        .then(Mono.just(new ApiResponse<Void>("Eliminado correctamente", null, Constants.STATUS_OK))))
+                .switchIfEmpty(Mono.just(new ApiResponse<Void>("ID no encontrado", null, Constants.STATUS_E404)))
                 .onErrorResume(e -> {
                     logger.error("Error deleting transactions with ID: {}", id, e);
-                    return Mono.just(new ApiResponse<Void>("Error al eliminar", null, 500));
+                    return Mono.just(new ApiResponse<Void>("Error al eliminar", null, Constants.STATUS_E500));
+                });
+    }
+
+    @DeleteMapping("/all")
+    public Mono<ApiResponse<Void>> deleteAll() {
+        logger.info("Deleting all transactions");
+        return service.deleteAll()
+                .then(Mono.just(new ApiResponse<Void>("Eliminado correctamente", null, Constants.STATUS_OK)))
+                .onErrorResume(e -> {
+                    logger.error("Error deleting all transactions", e);
+                    return Mono.just(new ApiResponse<Void>("Error al eliminar", null, Constants.STATUS_E500));
                 });
     }
 
