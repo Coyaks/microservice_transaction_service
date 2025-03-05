@@ -1,6 +1,6 @@
-package com.skoy.microservice_transaction_service.repository;
+package com.skoy.bootcamp_microservices.repository;
 
-import com.skoy.microservice_transaction_service.model.Transaction;
+import com.skoy.bootcamp_microservices.model.Transaction;
 import org.springframework.data.mongodb.repository.ReactiveMongoRepository;
 import reactor.core.publisher.Flux;
 

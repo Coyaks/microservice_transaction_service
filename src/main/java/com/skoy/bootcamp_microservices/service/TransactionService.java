@@ -1,15 +1,14 @@
-package com.skoy.microservice_transaction_service.service;
+package com.skoy.bootcamp_microservices.service;
 
-import com.skoy.microservice_transaction_service.dto.BankAccountDTO;
-import com.skoy.microservice_transaction_service.dto.CreditDTO;
-import com.skoy.microservice_transaction_service.dto.TransactionDTO;
-import com.skoy.microservice_transaction_service.dto.CustomerDTO;
-import com.skoy.microservice_transaction_service.enums.ProductTypeEnum;
-import com.skoy.microservice_transaction_service.mapper.TransactionMapper;
-import com.skoy.microservice_transaction_service.model.Transaction;
-import com.skoy.microservice_transaction_service.model.UpdateBalanceRequest;
-import com.skoy.microservice_transaction_service.repository.ITransactionRepository;
-import com.skoy.microservice_transaction_service.utils.ApiResponse;
+import com.skoy.bootcamp_microservices.dto.BankAccountDTO;
+import com.skoy.bootcamp_microservices.dto.CreditDTO;
+import com.skoy.bootcamp_microservices.dto.CustomerDTO;
+import com.skoy.bootcamp_microservices.dto.TransactionDTO;
+import com.skoy.bootcamp_microservices.enums.ProductTypeEnum;
+import com.skoy.bootcamp_microservices.mapper.TransactionMapper;
+import com.skoy.bootcamp_microservices.model.UpdateBalanceRequest;
+import com.skoy.bootcamp_microservices.repository.ITransactionRepository;
+import com.skoy.bootcamp_microservices.utils.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

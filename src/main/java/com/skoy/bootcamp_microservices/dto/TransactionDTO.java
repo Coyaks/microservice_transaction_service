@@ -1,9 +1,11 @@
-package com.skoy.microservice_transaction_service.dto;
+package com.skoy.bootcamp_microservices.dto;
 
-import com.skoy.microservice_transaction_service.enums.ProductTypeEnum;
-import com.skoy.microservice_transaction_service.enums.TransactionStatusEnum;
-import com.skoy.microservice_transaction_service.enums.TransactionTypeEnum;
-import lombok.*;
+import com.skoy.bootcamp_microservices.enums.ProductTypeEnum;
+import com.skoy.bootcamp_microservices.enums.TransactionStatusEnum;
+import com.skoy.bootcamp_microservices.enums.TransactionTypeEnum;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 

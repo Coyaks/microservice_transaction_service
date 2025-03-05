@@ -1,10 +1,10 @@
-package com.skoy.microservice_transaction_service;
+package com.skoy.bootcamp_microservices;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MicroserviceTransactionServiceApplicationTests {
+class BootcampMicroservicesApplicationTests {
 
 	@Test
 	void contextLoads() {

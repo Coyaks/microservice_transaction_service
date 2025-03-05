@@ -1,10 +1,10 @@
-package com.skoy.microservice_transaction_service.controller;
+package com.skoy.bootcamp_microservices.controller;
 
-import com.skoy.microservice_transaction_service.dto.TransactionDTO;
-import com.skoy.microservice_transaction_service.enums.ProductTypeEnum;
-import com.skoy.microservice_transaction_service.enums.TransactionTypeEnum;
-import com.skoy.microservice_transaction_service.service.ITransactionService;
-import com.skoy.microservice_transaction_service.utils.ApiResponse;
+import com.skoy.bootcamp_microservices.dto.TransactionDTO;
+import com.skoy.bootcamp_microservices.enums.ProductTypeEnum;
+import com.skoy.bootcamp_microservices.enums.TransactionTypeEnum;
+import com.skoy.bootcamp_microservices.service.ITransactionService;
+import com.skoy.bootcamp_microservices.utils.ApiResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

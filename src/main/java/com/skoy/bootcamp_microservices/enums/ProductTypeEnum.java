@@ -1,4 +1,4 @@
-package com.skoy.microservice_transaction_service.enums;
+package com.skoy.bootcamp_microservices.enums;
 
 public enum ProductTypeEnum {
     BANK_ACCOUNT("CUENTAS BANCARIAS"), //PASIVOS

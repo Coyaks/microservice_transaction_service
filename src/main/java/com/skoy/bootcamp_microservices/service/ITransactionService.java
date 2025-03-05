@@ -1,6 +1,6 @@
-package com.skoy.microservice_transaction_service.service;
+package com.skoy.bootcamp_microservices.service;
 
-import com.skoy.microservice_transaction_service.dto.TransactionDTO;
+import com.skoy.bootcamp_microservices.dto.TransactionDTO;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 

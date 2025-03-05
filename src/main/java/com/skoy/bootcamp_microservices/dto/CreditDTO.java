@@ -1,7 +1,7 @@
-package com.skoy.microservice_transaction_service.dto;
+package com.skoy.bootcamp_microservices.dto;
 
-import com.skoy.microservice_transaction_service.enums.CreditTypeEnum;
-import com.skoy.microservice_transaction_service.enums.CurrencyEnum;
+import com.skoy.bootcamp_microservices.enums.CreditTypeEnum;
+import com.skoy.bootcamp_microservices.enums.CurrencyEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

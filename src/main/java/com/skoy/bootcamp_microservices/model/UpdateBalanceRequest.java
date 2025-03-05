@@ -1,6 +1,6 @@
-package com.skoy.microservice_transaction_service.model;
+package com.skoy.bootcamp_microservices.model;
 
-import com.skoy.microservice_transaction_service.enums.TransactionTypeEnum;
+import com.skoy.bootcamp_microservices.enums.TransactionTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
 

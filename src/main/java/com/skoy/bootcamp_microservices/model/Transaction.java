@@ -1,12 +1,12 @@
-package com.skoy.microservice_transaction_service.model;
+package com.skoy.bootcamp_microservices.model;
 
-import com.skoy.microservice_transaction_service.enums.ProductTypeEnum;
-import com.skoy.microservice_transaction_service.enums.TransactionStatusEnum;
-import com.skoy.microservice_transaction_service.enums.TransactionTypeEnum;
+import com.skoy.bootcamp_microservices.enums.ProductTypeEnum;
+import com.skoy.bootcamp_microservices.enums.TransactionStatusEnum;
+import com.skoy.bootcamp_microservices.enums.TransactionTypeEnum;
 import lombok.Data;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.persistence.Id;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 

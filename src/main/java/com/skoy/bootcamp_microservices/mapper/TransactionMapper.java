@@ -1,7 +1,7 @@
-package com.skoy.microservice_transaction_service.mapper;
+package com.skoy.bootcamp_microservices.mapper;
 
-import com.skoy.microservice_transaction_service.dto.TransactionDTO;
-import com.skoy.microservice_transaction_service.model.Transaction;
+import com.skoy.bootcamp_microservices.dto.TransactionDTO;
+import com.skoy.bootcamp_microservices.model.Transaction;
 
 public class TransactionMapper {
 
