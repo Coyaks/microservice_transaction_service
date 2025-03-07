@@ -31,13 +31,13 @@ public class TransactionService implements ITransactionService {
     private final WebClient.Builder webClientBuilder;
     private static final Logger logger = LoggerFactory.getLogger(TransactionService.class);
 
-    @Value("${customer.service.url}")
+    @Value("${services.customer}")
     private String customerServiceUrl;
 
-    @Value("${account.service.url}")
+    @Value("${services.bankaccount}")
     private String accountServiceUrl;
 
-    @Value("${credit.service.url}")
+    @Value("${services.credit}")
     private String creditServiceUrl;
 
     @Override
