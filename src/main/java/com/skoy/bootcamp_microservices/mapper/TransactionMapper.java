@@ -12,6 +12,8 @@ public class TransactionMapper {
         item.setProductType(dto.getProductType());
         item.setCustomerId(dto.getCustomerId());
         item.setTransactionType(dto.getTransactionType());
+        item.setCardType(dto.getCardType());
+        item.setCardId(dto.getCardId());
         item.setAmount(dto.getAmount());
         item.setStatus(dto.getStatus());
         item.setCreatedAt(dto.getCreatedAt());
@@ -26,6 +28,8 @@ public class TransactionMapper {
         dto.setProductType(item.getProductType());
         dto.setCustomerId(item.getCustomerId());
         dto.setTransactionType(item.getTransactionType());
+        dto.setCardType(item.getCardType());
+        dto.setCardId(item.getCardId());
         dto.setAmount(item.getAmount());
         dto.setStatus(item.getStatus());
         dto.setCreatedAt(item.getCreatedAt());

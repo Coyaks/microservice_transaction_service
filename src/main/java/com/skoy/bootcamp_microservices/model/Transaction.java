@@ -1,5 +1,6 @@
 package com.skoy.bootcamp_microservices.model;
 
+import com.skoy.bootcamp_microservices.enums.CardTypeEnum;
 import com.skoy.bootcamp_microservices.enums.ProductTypeEnum;
 import com.skoy.bootcamp_microservices.enums.TransactionStatusEnum;
 import com.skoy.bootcamp_microservices.enums.TransactionTypeEnum;
@@ -19,6 +20,8 @@ public class Transaction {
     private ProductTypeEnum productType;
     private String productTypeId;
     private TransactionTypeEnum transactionType; // DEPOSIT, WITHDRAWAL, TRANSFER
+    private CardTypeEnum cardType;
+    private String cardId;
     private BigDecimal amount;
     private TransactionStatusEnum status;
     private LocalDateTime createdAt;

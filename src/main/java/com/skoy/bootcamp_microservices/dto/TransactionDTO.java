@@ -1,5 +1,6 @@
 package com.skoy.bootcamp_microservices.dto;
 
+import com.skoy.bootcamp_microservices.enums.CardTypeEnum;
 import com.skoy.bootcamp_microservices.enums.ProductTypeEnum;
 import com.skoy.bootcamp_microservices.enums.TransactionStatusEnum;
 import com.skoy.bootcamp_microservices.enums.TransactionTypeEnum;
@@ -19,6 +20,8 @@ public class TransactionDTO {
     private ProductTypeEnum productType;
     private String productTypeId;
     private TransactionTypeEnum transactionType;
+    private CardTypeEnum cardType;
+    private String cardId;
     private BigDecimal amount;
     private TransactionStatusEnum status;
     private LocalDateTime createdAt;

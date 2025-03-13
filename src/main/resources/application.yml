@@ -2,7 +2,7 @@ server:
   port: 9004
 spring:
   application:
-    name: transaction_service
+    name: transaction-service
   data:
     mongodb:
       uri: mongodb://admin:password@localhost:27004/microservice_transaction_service?authSource=admin
